@@ -14,7 +14,6 @@ const cartList = ref<CartItem[]>([])
 const getCartListData = async () => {
   const res = await getMemberCartAPI()
   cartList.value = res.result
-  console.log(cartList.value)
 }
 
 //页面显示时获取购物车数据
@@ -48,7 +47,7 @@ const onDeleteCart = (skuId: string) => {
     <!-- 已登录: 显示购物车 -->
     <template v-if="memberStore.profile">
       <!-- 购物车列表 -->
-      <view class="cart-list" v-if="true">
+      <view class="cart-list" v-if="cartList.length">
         <!-- 优惠提示 -->
         <view class="tips">
           <text class="label">满减</text>
@@ -57,31 +56,27 @@ const onDeleteCart = (skuId: string) => {
         <!-- 滑动操作分区 -->
         <uni-swipe-action>
           <!-- 滑动操作项 -->
-          <uni-swipe-action-item v-for="item in 2" :key="item" class="cart-swipe">
+          <uni-swipe-action-item v-for="item in cartList" :key="item.skuId" class="cart-swipe">
             <!-- 商品信息 -->
             <view class="goods">
               <!-- 选中状态 -->
-              <text class="checkbox" :class="{ checked: true }"></text>
+              <text class="checkbox" :class="{ checked: item.selected }"></text>
               <navigator
-                :url="`/pages/goods/goods?id=1435025`"
+                :url="`/pages/goods/goods?id=${item.id}`"
                 hover-class="none"
                 class="navigator"
               >
-                <image
-                  mode="aspectFill"
-                  class="picture"
-                  src="https://yanxuan-item.nosdn.127.net/da7143e0103304f0f3230715003181ee.jpg"
-                ></image>
+                <image mode="aspectFill" class="picture" :src="item.picture"></image>
                 <view class="meta">
-                  <view class="name ellipsis">人手必备，儿童轻薄透气防蚊裤73-140cm</view>
-                  <view class="attrsText ellipsis">黄色小象 140cm</view>
-                  <view class="price">69.00</view>
+                  <view class="name ellipsis">{{ item.name }}</view>
+                  <view class="attrsText ellipsis">{{ item.attrsText }}</view>
+                  <view class="price">{{ item.nowPrice }}</view>
                 </view>
               </navigator>
               <!-- 商品数量 -->
               <view class="count">
                 <text class="text">-</text>
-                <input class="input" type="number" value="1" />
+                <input class="input" type="number" :value="item.count.toString()" />
                 <text class="text">+</text>
               </view>
             </view>
