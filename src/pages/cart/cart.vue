@@ -40,6 +40,9 @@ const onDeleteCart = (skuId: string) => {
     },
   })
 }
+//猜你喜欢
+import { useGuessList } from '@/composables/index'
+const { guessRef, onscrolltolower } = useGuessList()
 </script>
 
 <template>
@@ -83,7 +86,7 @@ const onDeleteCart = (skuId: string) => {
             <!-- 右侧删除按钮 -->
             <template #right>
               <view class="cart-swipe-right">
-                <button class="button delete-button" @tap="onDeleteCart(item)">删除</button>
+                <button class="button delete-button" @tap="onDeleteCart(item.skuId)">删除</button>
               </view>
             </template>
           </uni-swipe-action-item>
