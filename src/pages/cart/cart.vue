@@ -41,12 +41,18 @@ const onDeleteCart = (skuId: string) => {
   })
 }
 //猜你喜欢
-import { useGuessList } from '@/composables/index'
+import { useGuessList } from '../../composables/index'
 const { guessRef, onscrolltolower } = useGuessList()
+
+//修改商品数量
+import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box'
+const onChangeCount = (ev: InputNumberBoxEvent) => {
+  console.log(ev)
+}
 </script>
 
 <template>
-  <scroll-view scroll-y class="scroll-view">
+  <scroll-view scroll-y class="scroll-view" @scrolltolower="onscrolltolower">
     <!-- 已登录: 显示购物车 -->
     <template v-if="memberStore.profile">
       <!-- 购物车列表 -->
@@ -78,9 +84,12 @@ const { guessRef, onscrolltolower } = useGuessList()
               </navigator>
               <!-- 商品数量 -->
               <view class="count">
-                <text class="text">-</text>
-                <input class="input" type="number" :value="item.count.toString()" />
-                <text class="text">+</text>
+                <vk-data-input-number-box
+                  v-model="item.count"
+                  :min="1"
+                  :max="item.stock"
+                  @change="onChangeCount"
+                ></vk-data-input-number-box>
               </view>
             </view>
             <!-- 右侧删除按钮 -->
