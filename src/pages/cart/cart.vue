@@ -82,6 +82,28 @@ const onChangeSelectedAll = async () => {
     selected: _selectedAll,
   })
 }
+//计算选中的单品列表
+const selectedCartList = computed(() => {
+  return cartList.value.filter((item) => item.selected)
+})
+
+//计算选中总数
+const selectedCount = computed(() => {
+  return selectedCartList.value.reduce((prev, item) => prev + item.count, 0)
+})
+
+//计算选中总金额
+const selectedAmount = computed(() => {
+  return selectedCartList.value
+    .reduce((prev, item) => prev + item.nowPrice * item.count, 0)
+    .toFixed(2)
+})
+//去支付页面
+const gotoPayment = () => {
+  uni.navigateTo({
+    url: '/pages/order/order-confirm/order-confirm',
+  })
+}
 </script>
 
 <template>
@@ -151,9 +173,15 @@ const onChangeSelectedAll = async () => {
       <view class="toolbar">
         <text @tap="onChangeSelectedAll" class="all" :class="{ checked: allSelected }">全选</text>
         <text class="text">合计:</text>
-        <text class="amount">100</text>
+        <text class="amount">{{ selectedAmount }}</text>
         <view class="button-grounp">
-          <view class="button payment-button" :class="{ disabled: true }"> 去结算(10) </view>
+          <view
+            @tap="gotoPayment"
+            class="button payment-button"
+            :class="{ disabled: selectedCount === 0 }"
+          >
+            去结算{{ selectedCount }}
+          </view>
         </view>
       </view>
     </template>
