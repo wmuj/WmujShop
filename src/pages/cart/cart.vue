@@ -1,161 +1,396 @@
-<!-- 静态数据演示版本 适合任何后端 -->
-<template>
-  <view class="app">
-    <button @click="openSkuPopup()">打开SKU组件</button>
+<script setup lang="ts">
+//获取本地存储的数据
+import { useMemberStore } from '@/stores/modules/member'
+import { onShow } from '@dcloudio/uni-app'
 
-    <vk-data-goods-sku-popup
-      ref="skuPopup"
-      v-model="skuKey"
-      border-radius="20"
-      :z-index="990"
-      :localdata="goodsInfo"
-      :mode="skuMode"
-      @open="onOpenSkuPopup"
-      @close="onCloseSkuPopup"
-      @add-cart="addCart"
-      @buy-now="buyNow"
-    ></vk-data-goods-sku-popup>
-  </view>
-</template>
+//获取购物车数据
+import { getMemberCartAPI } from '@/services/cart'
+import { ref } from 'vue'
+import type { CartItem } from '@/types/cart'
 
-<script>
-export default {
-  data() {
-    return {
-      // 是否打开SKU弹窗
-      skuKey: false,
-      // SKU弹窗模式
-      skuMode: 1,
-      // 后端返回的商品信息
-      goodsInfo: {},
-    }
-  },
-  // 监听 - 页面每次【加载时】执行(如：前进)
-  onLoad(options) {
-    this.init(options)
-  },
-  methods: {
-    // 初始化
-    init(options = {}) {},
-    // 获取商品信息，并打开sku弹出
-    openSkuPopup() {
-      /**
-       * 获取商品信息
-       * 这里可以看到每次打开SKU都会去重新请求商品信息,为的是每次打开SKU组件可以实时看到剩余库存
-       */
-      // 此处写接口请求，并将返回的数据进行处理成goodsInfo的数据格式，
-      // goodsInfo是后端返回的数据
-      this.goodsInfo = {
-        _id: '001',
-        name: 'iphone11',
-        goods_thumb:
-          'https://img14.360buyimg.com/n0/jfs/t1/59022/28/10293/141808/5d78088fEf6e7862d/68836f52ffaaad96.jpg',
-        sku_list: [
-          {
-            _id: '001',
-            goods_id: '001',
-            goods_name: 'iphone11',
-            image:
-              'https://img14.360buyimg.com/n0/jfs/t1/79668/22/9987/159271/5d780915Ebf9bf3f4/6a1b2703a9ed8737.jpg',
-            price: 19800,
-            sku_name_arr: ['红色', '128G', '公开版'],
-            stock: 1000,
-          },
-          {
-            _id: '002',
-            goods_id: '001',
-            goods_name: 'iphone11',
-            image:
-              'https://img14.360buyimg.com/n0/jfs/t1/52252/35/10516/124064/5d7808e0E46202391/7100f3733a1c1f00.jpg',
-            price: 9800,
-            sku_name_arr: ['白色', '256G', '公开版'],
-            stock: 100,
-          },
-          {
-            _id: '003',
-            goods_id: '001',
-            goods_name: 'iphone11',
-            image:
-              'https://img14.360buyimg.com/n0/jfs/t1/79668/22/9987/159271/5d780915Ebf9bf3f4/6a1b2703a9ed8737.jpg',
-            price: 19800,
-            sku_name_arr: ['红色', '256G', '公开版'],
-            stock: 1,
-          },
-        ],
-        spec_list: [
-          {
-            name: '颜色',
-            list: [{ name: '红色' }, { name: '黑色' }, { name: '白色' }],
-          },
-          {
-            name: '内存',
-            list: [{ name: '128G' }, { name: '256G' }],
-          },
-          {
-            name: '版本',
-            list: [{ name: '公开版' }, { name: '非公开版' }],
-          },
-        ],
-      }
-      this.skuKey = true
-    },
-    // sku组件 开始-----------------------------------------------------------
-    onOpenSkuPopup() {
-      console.log('监听 - 打开sku组件')
-    },
-    onCloseSkuPopup() {
-      console.log('监听 - 关闭sku组件')
-    },
-    // 加入购物车前的判断
-    addCartFn(obj) {
-      let { selectShop } = obj
-      // 模拟添加到购物车,请替换成你自己的添加到购物车逻辑
-      let res = {}
-      let name = selectShop.goods_name
-      if (selectShop.sku_name != '默认') {
-        name += '-' + selectShop.sku_name_arr
-      }
-      res.msg = `${name} 已添加到购物车`
-      if (typeof obj.success == 'function') obj.success(res)
-    },
-    // 加入购物车按钮
-    addCart(selectShop) {
-      console.log('监听 - 加入购物车')
-      this.addCartFn({
-        selectShop: selectShop,
-        success: (res) => {
-          // 实际业务时,请替换自己的加入购物车逻辑
-          this.toast(res.msg)
-          setTimeout(() => {
-            this.skuKey = false
-          }, 300)
-        },
-      })
-    },
-    // 立即购买
-    buyNow(selectShop) {
-      console.log('监听 - 立即购买')
-      this.addCartFn({
-        selectShop: selectShop,
-        success: (res) => {
-          // 实际业务时,请替换自己的立即购买逻辑
-          this.toast('立即购买')
-        },
-      })
-    },
-    toast(msg) {
-      uni.showToast({
-        title: msg,
-        icon: 'none',
-      })
-    },
-  },
+const memberStore = useMemberStore()
+//获取购物车数据
+const cartList = ref<CartItem[]>([])
+const getCartListData = async () => {
+  const res = await getMemberCartAPI()
+  cartList.value = res.result
 }
+
+//页面显示时获取购物车数据
+onShow(() => {
+  getCartListData()
+})
 </script>
 
-<style lang="scss" scoped>
-.app {
-  padding: 30rpx;
-  font-size: 28rpx;
+<template>
+  <scroll-view scroll-y class="scroll-view">
+    <!-- 已登录: 显示购物车 -->
+    <template v-if="memberStore.profile">
+      <!-- 购物车列表 -->
+      <view class="cart-list" v-if="true">
+        <!-- 优惠提示 -->
+        <view class="tips">
+          <text class="label">满减</text>
+          <text class="desc">满1件, 即可享受9折优惠</text>
+        </view>
+        <!-- 滑动操作分区 -->
+        <uni-swipe-action>
+          <!-- 滑动操作项 -->
+          <uni-swipe-action-item v-for="item in 2" :key="item" class="cart-swipe">
+            <!-- 商品信息 -->
+            <view class="goods">
+              <!-- 选中状态 -->
+              <text class="checkbox" :class="{ checked: true }"></text>
+              <navigator
+                :url="`/pages/goods/goods?id=1435025`"
+                hover-class="none"
+                class="navigator"
+              >
+                <image
+                  mode="aspectFill"
+                  class="picture"
+                  src="https://yanxuan-item.nosdn.127.net/da7143e0103304f0f3230715003181ee.jpg"
+                ></image>
+                <view class="meta">
+                  <view class="name ellipsis">人手必备，儿童轻薄透气防蚊裤73-140cm</view>
+                  <view class="attrsText ellipsis">黄色小象 140cm</view>
+                  <view class="price">69.00</view>
+                </view>
+              </navigator>
+              <!-- 商品数量 -->
+              <view class="count">
+                <text class="text">-</text>
+                <input class="input" type="number" value="1" />
+                <text class="text">+</text>
+              </view>
+            </view>
+            <!-- 右侧删除按钮 -->
+            <template #right>
+              <view class="cart-swipe-right">
+                <button class="button delete-button">删除</button>
+              </view>
+            </template>
+          </uni-swipe-action-item>
+        </uni-swipe-action>
+      </view>
+      <!-- 购物车空状态 -->
+      <view class="cart-blank" v-else>
+        <image src="/static/images/blank_cart.png" class="image" />
+        <text class="text">购物车还是空的，快来挑选好货吧</text>
+        <navigator open-type="switchTab" url="/pages/index/index" hover-class="none">
+          <button class="button">去首页看看</button>
+        </navigator>
+      </view>
+      <!-- 吸底工具栏 -->
+      <view class="toolbar">
+        <text class="all" :class="{ checked: true }">全选</text>
+        <text class="text">合计:</text>
+        <text class="amount">100</text>
+        <view class="button-grounp">
+          <view class="button payment-button" :class="{ disabled: true }"> 去结算(10) </view>
+        </view>
+      </view>
+    </template>
+    <!-- 未登录: 提示登录 -->
+    <view class="login-blank" v-else>
+      <text class="text">登录后可查看购物车中的商品</text>
+      <navigator url="/pages/login/login" hover-class="none">
+        <button class="button">去登录</button>
+      </navigator>
+    </view>
+    <!-- 猜你喜欢 -->
+    <XtxGuess ref="guessRef"></XtxGuess>
+    <!-- 底部占位空盒子 -->
+    <view class="toolbar-height"></view>
+  </scroll-view>
+</template>
+
+<style lang="scss">
+// 根元素
+:host {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #f7f7f8;
+}
+
+// 滚动容器
+.scroll-view {
+  flex: 1;
+}
+
+// 购物车列表
+.cart-list {
+  padding: 0 20rpx;
+
+  // 优惠提示
+  .tips {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    margin: 30rpx 10rpx;
+    font-size: 26rpx;
+    color: #666;
+
+    .label {
+      color: #fff;
+      padding: 7rpx 15rpx 5rpx;
+      border-radius: 4rpx;
+      font-size: 24rpx;
+      background-color: #27ba9b;
+      margin-right: 10rpx;
+    }
+  }
+
+  // 购物车商品
+  .goods {
+    display: flex;
+    padding: 20rpx 20rpx 20rpx 80rpx;
+    border-radius: 10rpx;
+    background-color: #fff;
+    position: relative;
+
+    .navigator {
+      display: flex;
+    }
+
+    .checkbox {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 80rpx;
+      height: 100%;
+
+      &::before {
+        content: '\e6cd';
+        font-family: 'erabbit' !important;
+        font-size: 40rpx;
+        color: #444;
+      }
+
+      &.checked::before {
+        content: '\e6cc';
+        color: #27ba9b;
+      }
+    }
+
+    .picture {
+      width: 170rpx;
+      height: 170rpx;
+    }
+
+    .meta {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-left: 20rpx;
+    }
+
+    .name {
+      height: 72rpx;
+      font-size: 26rpx;
+      color: #444;
+    }
+
+    .attrsText {
+      line-height: 1.8;
+      padding: 0 15rpx;
+      font-size: 24rpx;
+      align-self: flex-start;
+      border-radius: 4rpx;
+      color: #888;
+      background-color: #f7f7f8;
+    }
+
+    .price {
+      line-height: 1;
+      font-size: 26rpx;
+      color: #444;
+      margin-bottom: 2rpx;
+      color: #cf4444;
+
+      &::before {
+        content: '￥';
+        font-size: 80%;
+      }
+    }
+
+    // 商品数量
+    .count {
+      position: absolute;
+      bottom: 20rpx;
+      right: 5rpx;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 220rpx;
+      height: 48rpx;
+
+      .text {
+        height: 100%;
+        padding: 0 20rpx;
+        font-size: 32rpx;
+        color: #444;
+      }
+
+      .input {
+        height: 100%;
+        text-align: center;
+        border-radius: 4rpx;
+        font-size: 24rpx;
+        color: #444;
+        background-color: #f6f6f6;
+      }
+    }
+  }
+
+  .cart-swipe {
+    display: block;
+    margin: 20rpx 0;
+  }
+
+  .cart-swipe-right {
+    display: flex;
+    height: 100%;
+
+    .button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50px;
+      padding: 6px;
+      line-height: 1.5;
+      color: #fff;
+      font-size: 26rpx;
+      border-radius: 0;
+    }
+
+    .delete-button {
+      background-color: #cf4444;
+    }
+  }
+}
+
+// 空状态
+.cart-blank,
+.login-blank {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 60vh;
+  .image {
+    width: 400rpx;
+    height: 281rpx;
+  }
+  .text {
+    color: #444;
+    font-size: 26rpx;
+    margin: 20rpx 0;
+  }
+  .button {
+    width: 240rpx !important;
+    height: 60rpx;
+    line-height: 60rpx;
+    margin-top: 20rpx;
+    font-size: 26rpx;
+    border-radius: 60rpx;
+    color: #fff;
+    background-color: #27ba9b;
+  }
+}
+
+// 吸底工具栏
+.toolbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--window-bottom);
+  z-index: 1;
+
+  height: 100rpx;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  border-top: 1rpx solid #ededed;
+  border-bottom: 1rpx solid #ededed;
+  background-color: #fff;
+  box-sizing: content-box;
+
+  .all {
+    margin-left: 25rpx;
+    font-size: 14px;
+    color: #444;
+    display: flex;
+    align-items: center;
+  }
+
+  .all::before {
+    font-family: 'erabbit' !important;
+    content: '\e6cd';
+    font-size: 40rpx;
+    margin-right: 8rpx;
+  }
+
+  .checked::before {
+    content: '\e6cc';
+    color: #27ba9b;
+  }
+
+  .text {
+    margin-right: 8rpx;
+    margin-left: 32rpx;
+    color: #444;
+    font-size: 14px;
+  }
+
+  .amount {
+    font-size: 20px;
+    color: #cf4444;
+
+    .decimal {
+      font-size: 12px;
+    }
+
+    &::before {
+      content: '￥';
+      font-size: 12px;
+    }
+  }
+
+  .button-grounp {
+    margin-left: auto;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    line-height: 72rpx;
+    font-size: 13px;
+    color: #fff;
+
+    .button {
+      width: 240rpx;
+      margin: 0 10rpx;
+      border-radius: 72rpx;
+    }
+
+    .payment-button {
+      background-color: #27ba9b;
+
+      &.disabled {
+        opacity: 0.6;
+      }
+    }
+  }
+}
+// 底部占位空盒子
+.toolbar-height {
+  height: 100rpx;
 }
 </style>
