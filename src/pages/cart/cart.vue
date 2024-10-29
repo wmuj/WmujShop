@@ -52,6 +52,36 @@ const onChangeCount = async (ev: InputNumberBoxEvent) => {
     count: ev.value,
   })
 }
+
+//修改修改状态 单品修好
+const onChangeSelected = async (item: CartItem) => {
+  // 修改本地状态 取反
+  item.selected = !item.selected
+  // 修改后端状态
+  await putMemberCartBySkuIdAPI(item.skuId, {
+    selected: item.selected,
+  })
+}
+//计算全选属性
+import { computed } from 'vue'
+const allSelected = computed(() => {
+  return cartList.value.length > 0 && cartList.value.every((item) => item.selected)
+})
+
+//全选
+import { putMemberCartSelectedAPI } from '@/services/cart'
+const onChangeSelectedAll = async () => {
+  //全选状态取反
+  const _selectedAll = !allSelected.value
+  //修改前端
+  cartList.value.forEach((item) => {
+    item.selected = _selectedAll
+  })
+  //修改后端
+  await putMemberCartSelectedAPI({
+    selected: _selectedAll,
+  })
+}
 </script>
 
 <template>
@@ -72,7 +102,11 @@ const onChangeCount = async (ev: InputNumberBoxEvent) => {
             <!-- 商品信息 -->
             <view class="goods">
               <!-- 选中状态 -->
-              <text class="checkbox" :class="{ checked: item.selected }"></text>
+              <text
+                class="checkbox"
+                :class="{ checked: item.selected }"
+                @tap="onChangeSelected(item)"
+              ></text>
               <navigator
                 :url="`/pages/goods/goods?id=${item.id}`"
                 hover-class="none"
@@ -115,7 +149,7 @@ const onChangeCount = async (ev: InputNumberBoxEvent) => {
       </view>
       <!-- 吸底工具栏 -->
       <view class="toolbar">
-        <text class="all" :class="{ checked: true }">全选</text>
+        <text @tap="onChangeSelectedAll" class="all" :class="{ checked: allSelected }">全选</text>
         <text class="text">合计:</text>
         <text class="amount">100</text>
         <view class="button-grounp">
