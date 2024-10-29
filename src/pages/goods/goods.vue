@@ -102,11 +102,32 @@ import { computed } from 'vue'
 const selectArrText = computed(() => {
   return skuPopuRef.value?.selectArr?.join(' ').trim() || '请选择商品规格'
 })
+
+//处理购物车按钮事件
+import { postMemberCartAPI } from '@/services/cart'
+import type { SkuPopupEvent } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
+const addCart = async (val: SkuPopupEvent) => {
+  await postMemberCartAPI({ skuId: val._id, count: val.buy_num })
+  //添加成功提示
+  uni.showToast({
+    title: '添加成功',
+    icon: 'success',
+    mask: true,
+  })
+  //关闭sku弹窗
+  isShowSku.value = false
+}
+//点击立即购买按钮
+const buyNow = (val: SkuPopupEvent) => {
+  console.log('我点击了购买', val)
+}
 </script>
 
 <template>
   <!-- sku弹窗组件 -->
   <vk-data-goods-sku-popup
+    @add-cart="addCart"
+    @buy-now="buyNow"
     ref="skuPopuRef"
     v-model="isShowSku"
     :localdata="localdata"
