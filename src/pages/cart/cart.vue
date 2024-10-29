@@ -45,9 +45,12 @@ import { useGuessList } from '../../composables/index'
 const { guessRef, onscrolltolower } = useGuessList()
 
 //修改商品数量
+import { putMemberCartBySkuIdAPI } from '@/services/cart'
 import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box'
-const onChangeCount = (ev: InputNumberBoxEvent) => {
-  console.log(ev)
+const onChangeCount = async (ev: InputNumberBoxEvent) => {
+  await putMemberCartBySkuIdAPI(ev.index, {
+    count: ev.value,
+  })
 }
 </script>
 
@@ -89,6 +92,7 @@ const onChangeCount = (ev: InputNumberBoxEvent) => {
                   :min="1"
                   :max="item.stock"
                   @change="onChangeCount"
+                  :index="item.skuId"
                 ></vk-data-input-number-box>
               </view>
             </view>
