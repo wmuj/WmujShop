@@ -50,6 +50,23 @@ onReady(() => {
     },
   )
 })
+// 获取订单详情
+import { OrderState, orderStateList } from '@/services/contants'
+import { getMemberOrderByIdAPI } from '@/services/order'
+import type { OrderResult } from '@/types/order'
+import { onLoad } from '@dcloudio/uni-app'
+const pagesOrderDetailList = ref<OrderResult>()
+const getPagesOrderDetail = async () => {
+  const res = await getMemberOrderByIdAPI(query.id)
+  pagesOrderDetailList.value = res.result
+}
+
+onLoad(() => {
+  getPagesOrderDetail()
+})
+
+//骨架屏
+import PageSkeleton from '@/components/PageSkeleton.vue'
 </script>
 
 <template>
@@ -67,11 +84,11 @@ onReady(() => {
     </view>
   </view>
   <scroll-view scroll-y class="viewport" id="scroller" @scrolltolower="onscrolltolower">
-    <template v-if="true">
+    <template v-if="pagesOrderDetailList">
       <!-- 订单状态 -->
       <view class="overview" :style="{ paddingTop: safeAreaInsets!.top + 20 + 'px' }">
         <!-- 待付款状态:展示去支付按钮和倒计时 -->
-        <template v-if="true">
+        <template v-if="pagesOrderDetailList?.orderState === OrderState.DaiFuKuan">
           <view class="status icon-clock">等待付款</view>
           <view class="tips">
             <text class="money">应付金额: ¥ 99.00</text>
@@ -83,7 +100,7 @@ onReady(() => {
         <!-- 其他订单状态:展示再次购买按钮 -->
         <template v-else>
           <!-- 订单状态文字 -->
-          <view class="status"> 待付款 </view>
+          <view class="status"> {{ orderStateList[pagesOrderDetailList!.orderState].text }} </view>
           <view class="button-group">
             <navigator
               class="button"
