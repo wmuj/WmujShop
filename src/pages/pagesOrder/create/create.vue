@@ -28,11 +28,17 @@ import { getMemberOrderPreNowAPI } from '@/services/order'
 //获取订单信息 --结算购物车||---立即购买
 const memberOrderPreData = ref<OrderPreResult>()
 
+//再次购买订单api
+import { getMemberOrderRepurchaseByIdAPI } from '@/services/order'
 const getMemberOrderPreData = async () => {
   if (query.count && query.skuId) {
     const res = await getMemberOrderPreNowAPI({ skuId: query.skuId, count: query.count })
     memberOrderPreData.value = res.result
     //收货地址要改成默认地址
+  } else if (query.orderId) {
+    //获取订单信息---再次购买
+    const res = await getMemberOrderRepurchaseByIdAPI(query.orderId)
+    memberOrderPreData.value = res.result
   } else {
     const res = await getMemberOrderPreAPI()
     memberOrderPreData.value = res.result
@@ -55,7 +61,7 @@ const selecteAddress = computed(() => {
 })
 
 //接受从商品点击立即购买传递来的参数
-const query = defineProps<{ skuId?: string; count?: string }>()
+const query = defineProps<{ skuId?: string; count?: string; orderId?: string }>()
 
 //提交订单
 import { postMemberOrderAPI } from '@/services/order'
