@@ -19,13 +19,14 @@ const getCartListData = async () => {
 //页面显示时获取购物车数据
 onShow(async () => {
   //登录了才给刷新数据
+
   if (memberStore.profile) {
     isFINISH.value = false
     await getCartListData()
-    isFINISH.value = true
-  } else {
-    isFINISH.value = true
   }
+  setTimeout(() => {
+    isFINISH.value = true
+  }, 2000)
 })
 
 // 点击删除按钮
@@ -117,6 +118,18 @@ const gotoPayment = () => {
 import CartSkeleton from './CartSkeleton.vue'
 //是否加载完成
 const isFINISH = ref(false)
+//适配安全区
+import { onMounted } from 'vue'
+const toolbarPaddingBottom = ref(0) // 默认内边距
+onMounted(() => {
+  // 获取设备信息
+  const systemInfo = uni.getSystemInfoSync()
+  if (systemInfo.safeArea) {
+    // 计算底部安全区的内边距
+    const safeAreaBottom = systemInfo.screenHeight - systemInfo.safeArea.bottom
+    toolbarPaddingBottom.value += safeAreaBottom
+  }
+})
 </script>
 
 <template>
@@ -183,7 +196,7 @@ const isFINISH = ref(false)
         </navigator>
       </view>
       <!-- 吸底工具栏 -->
-      <view class="toolbar">
+      <view class="toolbar" :style="{ paddingBottom: toolbarPaddingBottom + 'px' }">
         <text @tap="onChangeSelectedAll" class="all" :class="{ checked: allSelected }">全选</text>
         <text class="text">合计:</text>
         <text class="amount">{{ selectedAmount }}</text>
