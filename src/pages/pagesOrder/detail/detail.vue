@@ -33,6 +33,23 @@ const query = defineProps<{
 const pages = getCurrentPages()
 
 // 获取当前页面实例，数组最后一项
+const pageInstance = pages.at(-1) as any
+
+//页面渲染完毕，绑定动画效果
+import { onReady } from '@dcloudio/uni-app'
+onReady(() => {
+  pageInstance.animate(
+    '.navbar',
+    [{ backgroundColor: 'transparent' }, { backgroundColor: '#f8f8f8' }],
+    1000,
+    {
+      scrollSource: '#scroller',
+      timeRange: 1000,
+      startScrollOffset: 0,
+      endScrollOffset: 60,
+    },
+  )
+})
 </script>
 
 <template>
