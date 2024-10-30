@@ -34,19 +34,31 @@ const getMemberOrderPreData = async () => {
 onLoad(() => {
   getMemberOrderPreData()
 })
+//收货地址
+import { userAddressesStore } from '@/stores/modules/address'
+const { selectedAddress, ChangeselectedAddress } = userAddressesStore()
+//计算属性计算默认地址切换
+const selecteAddress = computed(() => {
+  return selectedAddress || memberOrderPreData.value?.userAddresses?.find((item) => item.isDefault)
+})
+//页面展示再次刷新
+import { onShow } from '@dcloudio/uni-app'
+onShow(() => {
+  console.log(selectedAddress)
+})
 </script>
 
 <template>
   <scroll-view scroll-y class="viewport">
     <!-- 收货地址 -->
     <navigator
-      v-if="memberOrderPreData?.userAddresses"
+      v-if="selecteAddress"
       class="shipment"
       hover-class="none"
       url="/pagesMember/address/address?from=order"
     >
-      <view class="user"> {{ memberOrderPreData.userAddresses[0].receiver }} </view>
-      <view class="address"> {{ memberOrderPreData.userAddresses[0].fullLocation }} </view>
+      <view class="user"> {{ selecteAddress.receiver }} {{ selecteAddress.contact }}</view>
+      <view class="address"> {{ selecteAddress.fullLocation }} {{ selecteAddress.address }}</view>
       <text class="icon icon-right"></text>
     </navigator>
     <navigator
@@ -63,7 +75,7 @@ onLoad(() => {
     <view class="goods">
       <navigator
         v-for="item in memberOrderPreData?.goods"
-        :key="item"
+        :key="item.skuId"
         :url="`/pages/goods/goods?id=${item.id}`"
         class="item"
         hover-class="none"
@@ -116,7 +128,7 @@ onLoad(() => {
   <!-- 吸底工具栏 -->
   <view class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
     <view class="total-pay symbol">
-      <text class="number">{{ memberOrderPreData?.summary.totalPayPrice }}</text>
+      <text class="number">{{ memberOrderPreData?.summary.totalPayPrice?.toFixed(2) }}</text>
     </view>
     <view class="button" :class="{ disabled: true }"> 提交订单 </view>
   </view>

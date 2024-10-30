@@ -35,6 +35,16 @@ const onDeleteAddress = (id: string) => {
     },
   })
 }
+
+//订单使用store来修改地址 此处接受
+//修改收货地址
+import { userAddressesStore } from '@/stores/modules/address'
+const onChangeAddress = (item: AddressItem) => {
+  // 修改地址  返回上一页
+  const { selectedAddress, ChangeselectedAddress } = userAddressesStore()
+  ChangeselectedAddress(item)
+  uni.navigateBack()
+}
 </script>
 
 <template>
@@ -43,8 +53,9 @@ const onDeleteAddress = (id: string) => {
     <scroll-view class="scroll-view" scroll-y>
       <view v-if="addressList" class="address">
         <uni-swipe-action class="address-list">
+          <!-- //收货地址项 -->
           <uni-swipe-action-item v-for="(item, index) in addressList" :key="item.id">
-            <view class="item-content">
+            <view class="item-content" @tap="onChangeAddress(item)">
               <view class="user">
                 {{ item.receiver }}
                 <text class="contact">{{ item.contact }}</text>
@@ -55,6 +66,7 @@ const onDeleteAddress = (id: string) => {
                 class="edit"
                 hover-class="none"
                 :url="`/pagesMember/address-form/address-form?id=${item.id}`"
+                @tap.sto="() => {}"
               >
                 修改
               </navigator>

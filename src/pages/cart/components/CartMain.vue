@@ -112,7 +112,9 @@ const gotoPayment = () => {
     })
   }
   //跳转到支付页面
-  uni.navigateTo({ url: '/pagesOrder/create/create' })
+  uni.navigateTo({
+    url: '/pages/pagesOrder/create/create',
+  })
 }
 //导入骨架屏
 import CartSkeleton from './CartSkeleton.vue'
