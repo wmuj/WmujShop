@@ -120,16 +120,7 @@ import CartSkeleton from './CartSkeleton.vue'
 const isFINISH = ref(false)
 //适配安全区
 import { onMounted } from 'vue'
-const toolbarPaddingBottom = ref(0) // 默认内边距
-onMounted(() => {
-  // 获取设备信息
-  const systemInfo = uni.getSystemInfoSync()
-  if (systemInfo.safeArea) {
-    // 计算底部安全区的内边距
-    const safeAreaBottom = systemInfo.screenHeight - systemInfo.safeArea.bottom
-    toolbarPaddingBottom.value += safeAreaBottom
-  }
-})
+const { safeAreaInsets } = uni.getSystemInfoSync()
 </script>
 
 <template>
@@ -196,7 +187,7 @@ onMounted(() => {
         </navigator>
       </view>
       <!-- 吸底工具栏 -->
-      <view class="toolbar" :style="{ paddingBottom: toolbarPaddingBottom + 'px' }">
+      <view class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
         <text @tap="onChangeSelectedAll" class="all" :class="{ checked: allSelected }">全选</text>
         <text class="text">合计:</text>
         <text class="amount">{{ selectedAmount }}</text>
