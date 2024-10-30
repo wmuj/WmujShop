@@ -119,7 +119,7 @@ const addCart = async (val: SkuPopupEvent) => {
 }
 //点击立即购买按钮
 const buyNow = (val: SkuPopupEvent) => {
-  console.log('我点击了购买', val)
+  uni.navigateTo({ url: `/pages/pagesOrder/create/create?skuId=${val._id}&count=${val.buy_num}` })
 }
 </script>
 

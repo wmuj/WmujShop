@@ -43,6 +43,7 @@ const onChangeAddress = (item: AddressItem) => {
   // 修改地址  返回上一页
   const { selectedAddress, ChangeselectedAddress } = userAddressesStore()
   ChangeselectedAddress(item)
+
   uni.navigateBack()
 }
 </script>
@@ -66,7 +67,7 @@ const onChangeAddress = (item: AddressItem) => {
                 class="edit"
                 hover-class="none"
                 :url="`/pagesMember/address-form/address-form?id=${item.id}`"
-                @tap.sto="() => {}"
+                @tap.stop="() => {}"
               >
                 修改
               </navigator>

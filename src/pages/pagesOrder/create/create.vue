@@ -24,11 +24,20 @@ const onChangeDelivery: UniHelper.SelectorPickerOnChange = (ev) => {
 import { getMemberOrderPreAPI } from '@/services/order'
 import type { OrderPreResult } from '@/types/order'
 import { onLoad } from '@dcloudio/uni-app'
+import { getMemberOrderPreNowAPI } from '@/services/order'
+//获取订单信息 --结算购物车||---立即购买
 const memberOrderPreData = ref<OrderPreResult>()
+
 const getMemberOrderPreData = async () => {
-  const res = await getMemberOrderPreAPI()
-  memberOrderPreData.value = res.result
-  console.log(memberOrderPreData.value)
+  if (query.count && query.skuId) {
+    const res = await getMemberOrderPreNowAPI({ skuId: query.skuId, count: query.count })
+    memberOrderPreData.value = res.result
+    //收货地址要改成默认地址
+  } else {
+    const res = await getMemberOrderPreAPI()
+    memberOrderPreData.value = res.result
+    // console.log(memberOrderPreData.value)
+  }
 }
 //页面加载获取订单信息
 onLoad(() => {
@@ -36,16 +45,19 @@ onLoad(() => {
 })
 //收货地址
 import { userAddressesStore } from '@/stores/modules/address'
-const { selectedAddress, ChangeselectedAddress } = userAddressesStore()
+const addressStore = userAddressesStore()
 //计算属性计算默认地址切换
 const selecteAddress = computed(() => {
-  return selectedAddress || memberOrderPreData.value?.userAddresses?.find((item) => item.isDefault)
+  return (
+    addressStore.selectedAddress ||
+    memberOrderPreData.value?.userAddresses.find((item) => item.isDefault)
+  )
 })
-//页面展示再次刷新
-import { onShow } from '@dcloudio/uni-app'
-onShow(() => {
-  console.log(selectedAddress)
-})
+
+//接受从商品点击立即购买传递来的参数
+const query = defineProps<{ skuId?: string; count?: string }>()
+
+//提交订单
 </script>
 
 <template>
@@ -130,7 +142,9 @@ onShow(() => {
     <view class="total-pay symbol">
       <text class="number">{{ memberOrderPreData?.summary.totalPayPrice?.toFixed(2) }}</text>
     </view>
-    <view class="button" :class="{ disabled: true }"> 提交订单 </view>
+    <view class="button" :class="{ disabled: !selecteAddress?.id }" @tap="onOrderSubmit">
+      提交订单
+    </view>
   </view>
 </template>
 
