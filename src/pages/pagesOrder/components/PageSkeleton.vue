@@ -1,20 +1,3 @@
-<!--
-此文件为开发者工具生成，生成时间: 2024/10/30下午7:29:09
-使用方法：
-在 D:\uniapp-studay\wmujShop\dist\dev\mp-weixin\pages\pagesOrder\detail\detail.wxml 引入模板
-
-```
-<import src="detail.skeleton.wxml"/>
-<template is="skeleton" wx:if="{{loading}}" />
-```
-
-在 D:\uniapp-studay\wmujShop\dist\dev\mp-weixin\pages\pagesOrder\detail\detail.wxss 中引入样式
-```
-@import "./detail.skeleton.wxss";
-```
-
-更多详细信息可以参考文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/skeleton.html
--->
 <template name="skeleton">
   <view class="sk-container">
     <view class="navbar navbar" style="padding-top: 47px">
@@ -151,16 +134,6 @@
   </view>
 </template>
 <style>
-/*
-此文件为开发者工具生成，生成时间: 2024/10/30下午7:29:09
-
-在 D:\uniapp-studay\wmujShop\dist\dev\mp-weixin\pages\pagesOrder\detail\detail.wxss 中引入样式
-```
-@import "./detail.skeleton.wxss";
-```
-
-更多详细信息可以参考文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/skeleton.html
-*/
 .sk-transparent {
   color: transparent !important;
 }

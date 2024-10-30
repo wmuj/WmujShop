@@ -66,7 +66,7 @@ onLoad(() => {
 })
 
 //骨架屏
-import PageSkeleton from '@/components/PageSkeleton.vue'
+import PageSkeleton from '../components/PageSkeleton.vue'
 </script>
 
 <template>
