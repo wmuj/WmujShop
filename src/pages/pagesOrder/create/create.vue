@@ -58,6 +58,27 @@ const selecteAddress = computed(() => {
 const query = defineProps<{ skuId?: string; count?: string }>()
 
 //提交订单
+import { postMemberOrderAPI } from '@/services/order'
+const onOrderSubmit = async () => {
+  //判断是否选择了收货地址
+  if (!selecteAddress.value) {
+    return uni.showToast({
+      title: '请选择收货地址',
+      icon: 'none',
+    })
+  } else {
+    const res = await postMemberOrderAPI({
+      addressId: selecteAddress.value?.id,
+      buyerMessage: buyerMessage.value,
+      deliveryTimeType: activeDelivery.value.type,
+      goods: memberOrderPreData.value!.goods.map((v) => ({ count: v.count, skuId: v.skuId })),
+      payChannel: 2,
+      payType: 1,
+    })
+    // 关闭当前页面，跳转到订单详情，传递订单id
+    uni.redirectTo({ url: `/pages/pagesOrder/detail/detail?id=${res.result.id}` })
+  }
+}
 </script>
 
 <template>
