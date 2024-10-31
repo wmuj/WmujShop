@@ -89,6 +89,41 @@ const onOrderPay = async () => {
 
   uni.redirectTo({ url: `/pages/pagesOrder/payment/payment?id=${query.id}` })
 }
+
+//是否是开发环境
+const isDev = import.meta.env.DEV
+
+//模拟发货
+import { getMemberOrderConsignmentByIdAPI } from '@/services/pay'
+const onOrderSend = async () => {
+  if (isDev) {
+    await getMemberOrderConsignmentByIdAPI(query.id)
+    uni.showToast({
+      title: '模拟发货成功',
+      icon: 'success',
+    })
+    //更新订单状态
+    pagesOrderDetailList.value!.orderState = OrderState.DaiShouHuo
+  }
+}
+
+//确认收货
+import { putMemberOrderReceiptByIdAPI } from '@/services/pay'
+const onOrderConfirm = () => {
+  //二次确认弹窗
+  uni.showModal({
+    title: '确认收货',
+    content: '请确认您已收到货物',
+    success: async (res) => {
+      if (res.confirm) {
+        //确认收货
+        const res = await putMemberOrderReceiptByIdAPI(query.id)
+        //更新订单状态
+        pagesOrderDetailList.value = res.result
+      }
+    },
+  })
+}
 </script>
 
 <template>
@@ -139,7 +174,13 @@ const onOrderPay = async () => {
               再次购买
             </navigator>
             <!-- 待发货状态：模拟发货,开发期间使用,用于修改订单状态为已发货 -->
-            <view v-if="false" class="button"> 模拟发货 </view>
+            <view
+              v-if="isDev && pagesOrderDetailList.orderState == OrderState.DaiShouHuo"
+              class="button"
+              @tap="onOrderSend"
+            >
+              模拟发货
+            </view>
           </view>
         </template>
       </view>
@@ -240,7 +281,13 @@ const onOrderPay = async () => {
             再次购买
           </navigator>
           <!-- 待收货状态: 展示确认收货 -->
-          <view class="button primary"> 确认收货 </view>
+          <view
+            class="button primary"
+            @tap="onOrderConfirm"
+            v-if="pagesOrderDetailList?.orderState === OrderState.DaiShouHuo"
+          >
+            确认收货
+          </view>
           <!-- 待评价状态: 展示去评价 -->
           <view class="button"> 去评价 </view>
           <!-- 待评价/已完成/已取消 状态: 展示删除订单 -->
