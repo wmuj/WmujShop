@@ -176,8 +176,8 @@ const onOrderDelete = async () => {
           title: '删除成功',
           icon: 'success',
         })
-        //关闭当前页，再跳转购物车页
-        uni.redirectTo({ url: '/pages/cart/cart2' })
+        //关闭当前页，再跳转订单列表页
+        uni.redirectTo({ url: '/pages/pagesOrder/list/list' })
       }
     },
   })
@@ -347,7 +347,9 @@ const onOrderDelete = async () => {
             确认收货
           </view>
           <!-- 待评价状态: 展示去评价 -->
-          <view class="button"> 去评价 </view>
+          <view class="button" v-if="pagesOrderDetailList.orderState === OrderState.DaiPingJia">
+            去评价
+          </view>
           <!-- 待评价/已完成/已取消 状态: 展示删除订单 -->
           <view
             class="button delete"
