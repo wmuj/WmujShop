@@ -59,6 +59,15 @@ const pagesOrderDetailList = ref<OrderResult>()
 const getPagesOrderDetail = async () => {
   const res = await getMemberOrderByIdAPI(query.id)
   pagesOrderDetailList.value = res.result
+  //判断只有待收货 待评价 已完成才显示物流信息
+  pagesOrderDetailList.value = res.result
+  if (
+    [OrderState.DaiShouHuo, OrderState.DaiPingJia, OrderState.YiWanCheng].includes(
+      pagesOrderDetailList.value.orderState,
+    )
+  ) {
+    getMemberOrderLogisticsByIdData()
+  }
 }
 
 onLoad(() => {
@@ -124,6 +133,15 @@ const onOrderConfirm = () => {
     },
   })
 }
+//获取物流信息
+import { getMemberOrderLogisticsByIdAPI } from '@/services/pay'
+import type { LogisticItem } from '@/types/order'
+//存储物流信息
+const logisticsInfo = ref<LogisticItem[]>([])
+const getMemberOrderLogisticsByIdData = async () => {
+  const res = await getMemberOrderLogisticsByIdAPI(query.id)
+  logisticsInfo.value = res.result.list
+}
 </script>
 
 <template>
@@ -187,16 +205,19 @@ const onOrderConfirm = () => {
       <!-- 配送状态 -->
       <view class="shipment">
         <!-- 订单物流信息 -->
-        <view v-for="item in 1" :key="item" class="item">
+        <view v-for="item in logisticsInfo" :key="item.id" class="item">
           <view class="message">
-            您已在广州市天河区黑马程序员完成取件，感谢使用菜鸟驿站，期待再次为您服务。
+            {{ item.text }}
           </view>
-          <view class="date"> 2023-04-14 13:14:20 </view>
+          <view class="date"> {{ item.time }} </view>
         </view>
         <!-- 用户收货地址 -->
         <view class="locate">
-          <view class="user"> 张三 13333333333 </view>
-          <view class="address"> 广东省 广州市 天河区 黑马程序员 </view>
+          <view class="user"
+            >{{ pagesOrderDetailList.receiverContact }}
+            {{ pagesOrderDetailList.receiverMobile }}</view
+          >
+          <view class="address"> {{ pagesOrderDetailList.receiverAddress }} </view>
         </view>
       </view>
 
