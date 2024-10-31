@@ -1,34 +1,6 @@
 <template name="skeleton">
   <view class="sk-container">
     <view class="viewport viewport">
-      <view class="tabs tabs">
-        <text
-          class="item sk-transparent sk-text-27-4194-560 sk-text"
-          style="background-position-x: 50%"
-          >全部</text
-        >
-        <text
-          class="item sk-transparent sk-text-27-4194-924 sk-text"
-          style="background-position-x: 50%"
-          >待付款</text
-        >
-        <text
-          class="item sk-transparent sk-text-27-4194-523 sk-text"
-          style="background-position-x: 50%"
-          >待发货</text
-        >
-        <text
-          class="item sk-transparent sk-text-27-4194-399 sk-text"
-          style="background-position-x: 50%"
-          >待收货</text
-        >
-        <text
-          class="item sk-transparent sk-text-27-4194-134 sk-text"
-          style="background-position-x: 50%"
-          >待评价</text
-        >
-        <view class="cursor cursor" style="left: 20%"></view>
-      </view>
       <swiper class="swiper swiper" current="0" autoplay="false">
         <swiper-item
           style="
