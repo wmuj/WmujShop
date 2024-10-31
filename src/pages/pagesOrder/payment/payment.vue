@@ -8,13 +8,36 @@ const query = defineProps<{
 
 // 猜你喜欢
 const { guessRef, onscrolltolower } = useGuessList()
+
+//获取订单详情看看是不是已取消】
+import type { OrderResult } from '@/types/order'
+import { onLoad } from '@dcloudio/uni-app'
+import { ref } from 'vue'
+import { getMemberOrderByIdAPI } from '@/services/order'
+
+import { OrderState, orderStateList } from '@/services/contants'
+
+const pagesOrderDetailList = ref<OrderResult>()
+const getPagesOrderDetail = async () => {
+  const res = await getMemberOrderByIdAPI(query.id)
+  pagesOrderDetailList.value = res.result
+  // console.log(pagesOrderDetailList.value)
+}
+onLoad(() => {
+  getPagesOrderDetail()
+})
 </script>
 
 <template>
   <scroll-view class="viewport" scroll-y @scrolltolower="onscrolltolower">
     <!-- 订单状态 -->
     <view class="overview">
-      <view class="status icon-checked">支付成功</view>
+      <view
+        class="status icon-checked"
+        v-if="pagesOrderDetailList!.orderState === OrderState.YiQuXiao"
+        >已取消</view
+      >
+      <view class="status icon-checked" v-else>支付成功</view>
       <view class="buttons">
         <navigator
           hover-class="none"

@@ -59,7 +59,7 @@ const pagesOrderDetailList = ref<OrderResult>()
 const getPagesOrderDetail = async () => {
   const res = await getMemberOrderByIdAPI(query.id)
   pagesOrderDetailList.value = res.result
-  console.log(pagesOrderDetailList.value)
+  // console.log(pagesOrderDetailList.value)
 
   //判断只有待收货 待评价 已完成才显示物流信息
   if (
@@ -95,7 +95,6 @@ const onOrderPay = async () => {
     await wx.requestPayment(res.result)
   }
   // 关闭当前页，再跳转支付结果页
-  console.log(123)
 
   uni.redirectTo({ url: `/pages/pagesOrder/payment/payment?id=${query.id}` })
 }
@@ -143,6 +142,24 @@ const getMemberOrderLogisticsByIdData = async () => {
   const res = await getMemberOrderLogisticsByIdAPI(query.id)
   logisticsInfo.value = res.result.list
 }
+
+//取消订单
+import { getMemberOrderCancelByIdAPI } from '@/services/pay'
+//取消订单原因
+const onOrderCancel = async () => {
+  uni.showModal({
+    title: '取消订单',
+    content: '确定要取消该订单吗？',
+    success: async (res) => {
+      if (res.confirm) {
+        //取消订单
+        await getMemberOrderCancelByIdAPI(query.id, { cancelReason: reason.value })
+        //关闭当前页，再跳转支付结果页
+        uni.redirectTo({ url: `/pages/pagesOrder/payment/payment?id=${query.id}` })
+      }
+    },
+  })
+}
 </script>
 
 <template>
@@ -167,7 +184,7 @@ const getMemberOrderLogisticsByIdData = async () => {
         <template v-if="pagesOrderDetailList?.orderState === OrderState.DaiFuKuan">
           <view class="status icon-clock">等待付款</view>
           <view class="tips">
-            <text class="money">应付金额: ¥ 99.00</text>
+            <text class="money">应付金额: ¥ {{ pagesOrderDetailList.payMoney.toFixed(2) }}</text>
             <text class="time">支付剩余</text>
             <uni-countdown
               :second="pagesOrderDetailList.countdown"
@@ -194,7 +211,7 @@ const getMemberOrderLogisticsByIdData = async () => {
             </navigator>
             <!-- 待发货状态：模拟发货,开发期间使用,用于修改订单状态为已发货 -->
             <view
-              v-if="isDev && pagesOrderDetailList.orderState == OrderState.DaiShouHuo"
+              v-if="isDev && pagesOrderDetailList.orderState == OrderState.DaiFaHuo"
               class="button"
               @tap="onOrderSend"
             >
@@ -229,7 +246,7 @@ const getMemberOrderLogisticsByIdData = async () => {
             class="navigator"
             v-for="item in pagesOrderDetailList.skus"
             :key="item"
-            :url="`/pages/goods/goods?id=${item.id}`"
+            :url="`/pages/goods/goods?id=${item.spuId}`"
             hover-class="none"
           >
             <image class="cover" :src="item.image"></image>
@@ -332,7 +349,7 @@ const getMemberOrderLogisticsByIdData = async () => {
       </view>
       <view class="footer">
         <view class="button" @tap="popup?.close?.()">取消</view>
-        <view class="button primary">确认</view>
+        <view class="button primary" @tap="onOrderCancel">确认</view>
       </view>
     </view>
   </uni-popup>
