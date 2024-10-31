@@ -177,7 +177,7 @@ const onOrderDelete = async () => {
           icon: 'success',
         })
         //关闭当前页，再跳转购物车页
-        uni.redirectTo({ url: '/pages/cart/cart' })
+        uni.redirectTo({ url: '/pages/cart/cart2' })
       }
     },
   })
