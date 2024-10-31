@@ -59,8 +59,9 @@ const pagesOrderDetailList = ref<OrderResult>()
 const getPagesOrderDetail = async () => {
   const res = await getMemberOrderByIdAPI(query.id)
   pagesOrderDetailList.value = res.result
+  console.log(pagesOrderDetailList.value)
+
   //判断只有待收货 待评价 已完成才显示物流信息
-  pagesOrderDetailList.value = res.result
   if (
     [OrderState.DaiShouHuo, OrderState.DaiPingJia, OrderState.YiWanCheng].includes(
       pagesOrderDetailList.value.orderState,
@@ -226,29 +227,26 @@ const getMemberOrderLogisticsByIdData = async () => {
         <view class="item">
           <navigator
             class="navigator"
-            v-for="item in 2"
+            v-for="item in pagesOrderDetailList.skus"
             :key="item"
-            :url="`/pages/goods/goods?id=${item}`"
+            :url="`/pages/goods/goods?id=${item.id}`"
             hover-class="none"
           >
-            <image
-              class="cover"
-              src="https://yanxuan-item.nosdn.127.net/c07edde1047fa1bd0b795bed136c2bb2.jpg"
-            ></image>
+            <image class="cover" :src="item.image"></image>
             <view class="meta">
-              <view class="name ellipsis">ins风小碎花泡泡袖衬110-160cm</view>
-              <view class="type">藏青小花， 130</view>
+              <view class="name ellipsis">{{ item.name }}</view>
+              <view class="type">{{ item.attrsText }}</view>
               <view class="price">
                 <view class="actual">
                   <text class="symbol">¥</text>
-                  <text>99.00</text>
+                  <text>{{ item.curPrice }}</text>
                 </view>
               </view>
-              <view class="quantity">x1</view>
+              <view class="quantity">x{{ item.quantity }}</view>
             </view>
           </navigator>
           <!-- 待评价状态:展示按钮 -->
-          <view class="action" v-if="true">
+          <view class="action" v-if="pagesOrderDetailList.orderState === OrderState.DaiPingJia">
             <view class="button primary">申请售后</view>
             <navigator url="" class="button"> 去评价 </navigator>
           </view>
@@ -257,15 +255,15 @@ const getMemberOrderLogisticsByIdData = async () => {
         <view class="total">
           <view class="row">
             <view class="text">商品总价: </view>
-            <view class="symbol">99.00</view>
+            <view class="symbol">{{ pagesOrderDetailList.totalMoney.toFixed(2) }}</view>
           </view>
           <view class="row">
             <view class="text">运费: </view>
-            <view class="symbol">10.00</view>
+            <view class="symbol">{{ pagesOrderDetailList.postFee.toFixed(2) }}</view>
           </view>
           <view class="row">
             <view class="text">应付金额: </view>
-            <view class="symbol primary">109.00</view>
+            <view class="symbol primary">{{ pagesOrderDetailList.payMoney.toFixed(2) }}</view>
           </view>
         </view>
       </view>
@@ -277,7 +275,7 @@ const getMemberOrderLogisticsByIdData = async () => {
           <view class="item">
             订单编号: {{ query.id }} <text class="copy" @tap="onCopy(query.id)">复制</text>
           </view>
-          <view class="item">下单时间: 2023-04-14 13:14:20</view>
+          <view class="item">下单时间:{{ pagesOrderDetailList.createTime }}</view>
         </view>
       </view>
 
@@ -288,7 +286,7 @@ const getMemberOrderLogisticsByIdData = async () => {
       <view class="toolbar-height" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }"></view>
       <view class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
         <!-- 待付款状态:展示支付按钮 -->
-        <template v-if="true">
+        <template v-if="pagesOrderDetailList.orderState === OrderState.DaiFuKuan">
           <view class="button primary" @tap="onOrderPay"> 去支付 </view>
           <view class="button" @tap="popup?.open?.()"> 取消订单 </view>
         </template>
