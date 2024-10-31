@@ -13,11 +13,21 @@ const orderTabs = ref([
 ])
 
 //准备高亮的下标
-const activeIndex = ref(0)
+const activeIndex = ref(orderTabs.value.findIndex((item) => item.orderState === Number(query.type)))
+//接受传递过来的参数
+const query = defineProps<{
+  type: string
+}>()
+
+//导入骨架屏
+import ListSkeleton from './components/ListSkeleton.vue'
+//骨架屏是否显示
+import { onShow } from '@dcloudio/uni-app'
+const isFinish = ref(false)
 </script>
 
 <template>
-  <view class="viewport">
+  <view class="viewport" v-if="isFinish">
     <!-- tabs -->
     <view class="tabs">
       <text class="item" v-for="(item, index) in orderTabs" :key="index" @tap="activeIndex = index">
@@ -93,6 +103,7 @@ const activeIndex = ref(0)
       </swiper-item>
     </swiper>
   </view>
+  <ListSkeleton v-else></ListSkeleton>
 </template>
 
 <style lang="scss">
