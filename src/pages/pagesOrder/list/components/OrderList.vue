@@ -57,8 +57,22 @@ const isFinish = ref(false)
 
 //去支付
 import { getPayMockAPI, getPayWxPayMiniPayAPI } from '@/services/pay'
-const onOrderPay = (id: number) => {
-  uni.redirectTo({ url: `/pages/pagesOrder/payment/payment?id=${id}` })
+const onOrderPay = async (id: string) => {
+  // 通过环境变量区分开发环境
+  if (import.meta.env.DEV) {
+    // 开发环境：模拟支付，修改订单状态为已支付
+    await getPayMockAPI({ orderId: id })
+  } else {
+    // 生产环境：获取支付参数 + 发起微信支付
+    const res = await getPayWxPayMiniPayAPI({ orderId: id })
+    await wx.requestPayment(res.result)
+  }
+  //提示
+  uni.showToast({ title: '支付成功', icon: 'success' })
+  //更新
+  const order = orderList.value.find((v: { id: string }) => v.id === id)
+  order!.orderState = OrderState.DaiShouHuo
+  // 关闭当前页，再跳转支付结果页
 }
 //确认收货
 import { putMemberOrderReceiptByIdAPI } from '@/services/pay'
