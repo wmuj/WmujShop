@@ -72,6 +72,23 @@ import PageSkeleton from '../components/PageSkeleton.vue'
 const onTimeup = () => {
   pagesOrderDetailList.value!.orderState = OrderState.YiQuXiao
 }
+//去支付
+import { getPayMockAPI, getPayWxPayMiniPayAPI } from '@/services/pay'
+const onOrderPay = async () => {
+  // 通过环境变量区分开发环境
+  if (import.meta.env.DEV) {
+    // 开发环境：模拟支付，修改订单状态为已支付
+    await getPayMockAPI({ orderId: query.id })
+  } else {
+    // 生产环境：获取支付参数 + 发起微信支付
+    const res = await getPayWxPayMiniPayAPI({ orderId: query.id })
+    await wx.requestPayment(res.result)
+  }
+  // 关闭当前页，再跳转支付结果页
+  console.log(123)
+
+  uni.redirectTo({ url: `/pages/pagesOrder/payment/payment?id=${query.id}` })
+}
 </script>
 
 <template>
@@ -107,7 +124,7 @@ const onTimeup = () => {
               @timeup="onTimeup"
             />
           </view>
-          <view class="button">去支付</view>
+          <view class="button" @tap="onOrderPay">去支付</view>
         </template>
         <!-- 其他订单状态:展示再次购买按钮 -->
         <template v-else>
@@ -210,7 +227,7 @@ const onTimeup = () => {
       <view class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
         <!-- 待付款状态:展示支付按钮 -->
         <template v-if="true">
-          <view class="button primary"> 去支付 </view>
+          <view class="button primary" @tap="onOrderPay"> 去支付 </view>
           <view class="button" @tap="popup?.open?.()"> 取消订单 </view>
         </template>
         <!-- 其他订单状态:按需展示按钮 -->
