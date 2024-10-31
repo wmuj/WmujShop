@@ -160,6 +160,28 @@ const onOrderCancel = async () => {
     },
   })
 }
+
+//删除订单
+import { deleteMemberOrderAPI } from '@/services/pay'
+const onOrderDelete = async () => {
+  uni.showModal({
+    title: '删除订单',
+    content: '确定要删除该订单吗？',
+    success: async (res) => {
+      if (res.confirm) {
+        //删除订单
+        await deleteMemberOrderAPI({ ids: [query.id] })
+        //提示一下，删除成功
+        uni.showToast({
+          title: '删除成功',
+          icon: 'success',
+        })
+        //关闭当前页，再跳转购物车页
+        uni.redirectTo({ url: '/pages/cart/cart' })
+      }
+    },
+  })
+}
 </script>
 
 <template>
@@ -327,7 +349,17 @@ const onOrderCancel = async () => {
           <!-- 待评价状态: 展示去评价 -->
           <view class="button"> 去评价 </view>
           <!-- 待评价/已完成/已取消 状态: 展示删除订单 -->
-          <view class="button delete"> 删除订单 </view>
+          <view
+            class="button delete"
+            @tap="onOrderDelete"
+            v-if="
+              [OrderState.DaiPingJia, OrderState.YiQuXiao, OrderState.YiWanCheng].includes(
+                pagesOrderDetailList.orderState,
+              )
+            "
+          >
+            删除订单
+          </view>
         </template>
       </view>
     </template>
