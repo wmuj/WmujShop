@@ -2,6 +2,7 @@
 //定义每个设备不同的安全距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 // console.log(safeAreaInsets)
+//引入搜索框组件
 </script>
 
 <template>
@@ -13,7 +14,7 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
     </view>
     <!-- 搜索条 -->
     <view class="search">
-      <text class="icon-search">搜索商品</text>
+      <text class="icon-search">商品</text>
       <text class="icon-scan"></text>
     </view>
   </view>

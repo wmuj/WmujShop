@@ -52,9 +52,7 @@ const isFinish = ref(false)
 <template>
   <view class="viewport" v-if="isFinish">
     <view class="logo">
-      <image
-        src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/images/logo_icon.png"
-      ></image>
+      <image src="../../static/images/logo_icon.png" style="width: 400rpx; height: 400rpx"></image>
     </view>
     <view class="login">
       <!-- 网页端表单登录 -->
