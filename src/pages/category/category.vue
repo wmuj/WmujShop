@@ -42,11 +42,8 @@ const isFinish = ref(false)
 <template>
   <view class="viewport" v-if="isFinish">
     <!-- 搜索框 -->
-    <view class="search">
-      <view class="input">
-        <text class="icon-search">女靴</text>
-      </view>
-    </view>
+    <!-- 搜索条 -->
+    <mehaotian-search-revision class="search"></mehaotian-search-revision>
     <!-- 分类 -->
     <view class="categories">
       <!-- 左侧：一级分类 -->
