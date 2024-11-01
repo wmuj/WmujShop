@@ -4,18 +4,17 @@ import type { CategoryItem } from '@/types/home'
 defineProps<{
   list: CategoryItem[]
 }>()
+const gotoCategory = (id: string) => {
+  //跳转到tabbar页面
+
+  uni.navigateTo({ url: `/pages/category/category2?id=${id}` })
+}
 </script>
 
 <template>
   <view class="category">
-    <navigator
-      class="category-item"
-      hover-class="none"
-      url="/pages/index/index"
-      v-for="item in list"
-      :key="item.id"
-    >
-      <image class="icon" :src="item.icon"></image>
+    <navigator class="category-item" hover-class="none" v-for="item in list" :key="item.id">
+      <image class="icon" :src="item.icon" @tap="gotoCategory(item.id)"></image>
       <text class="text">{{ item.name }}</text>
     </navigator>
   </view>

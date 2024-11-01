@@ -6,6 +6,7 @@ let code = ''
 onLoad(async () => {
   const res = await wx.login()
   code = res.code
+  isFinish.value = true
 })
 
 //获取用户手机号 (企业中的写法)

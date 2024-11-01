@@ -1,182 +1,188 @@
 {
-	// 组件自动导入
-	"easycom": {
-		// 是否开启自动导入，设置为 false 则关闭自动导入，默认为 true
-		"autoscan": true,
-		"custom": {
-			// uni-ui 规则如下配置
-			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
-			// 以 Xtx 开头的组件，在 components 目录中查找
-			"^Xtx(.*)": "@/components/Xtx$1.vue"
-		}
-	},
-	"pages": [
-		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "首页",
-				"navigationStyle": "custom", // 自定义导航栏
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/my/my",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white",
-				"navigationBarTitleText": "我的"
-			}
-		},
-		{
-			"path": "pages/cart/cart",
-			"style": {
-				"navigationBarTitleText": "购物车"
-			}
-		},
-		{
-			"path": "pages/cart/cart2",
-			"style": {
-				"navigationBarTitleText": "购物车"
-			}
-		},
-		{
-			"path": "pages/category/category",
-			"style": {
-				"navigationBarTitleText": "分类"
-			}
-		},
-		{
-			"path": "pages/login/login",
-			"style": {
-				"navigationBarTitleText": "登录"
-			}
-		},
-		{
-			"path": "pages/hot/hot",
-			"style": {
-				"navigationBarTitleText": "热门推荐"
-			}
-		},
-		{
-			"path": "pages/goods/goods",
-			"style": {
-				"navigationBarTitleText": "商品详情"
-			}
-		}
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	},
-	// 设置 TabBar
-	"tabBar": {
-		"color": "#333",
-		"selectedColor": "#27ba9b",
-		"backgroundColor": "#fff",
-		"borderStyle": "white",
-		"list": [
-			{
-				"text": "首页",
-				"pagePath": "pages/index/index",
-				"iconPath": "static/tabs/home_default.png",
-				"selectedIconPath": "static/tabs/home_selected.png"
-			},
-			{
-				"text": "分类",
-				"pagePath": "pages/category/category",
-				"iconPath": "static/tabs/category_default.png",
-				"selectedIconPath": "static/tabs/category_selected.png"
-			},
-			{
-				"text": "购物车",
-				"pagePath": "pages/cart/cart",
-				"iconPath": "static/tabs/cart_default.png",
-				"selectedIconPath": "static/tabs/cart_selected.png"
-			},
-			{
-				"text": "我的",
-				"pagePath": "pages/my/my",
-				"iconPath": "static/tabs/user_default.png",
-				"selectedIconPath": "static/tabs/user_selected.png"
-			}
-		]
-	},
-	// 分包加载
-	"subPackages": [
-		{
-			// 子包根目录
-			"root": "pagesMember",
-			"pages": [
-				{
-					"path": "settings/settings",
-					"style": {
-						"navigationBarTitleText": "设置"
-					}
-				},
-				{
-					"path": "profile/profile",
-					"style": {
-						"navigationBarTitleText": "个人信息页",
-						"navigationStyle": "custom", // 自定义导航栏
-						"navigationBarTextStyle": "white"
-					}
-				},
-				{
-					"path": "address/address",
-					"style": {
-						"navigationBarTitleText": "地址管理"
-					}
-				},
-				{
-					"path": "address-form/address-form",
-					"style": {
-						"navigationBarTitleText": "地址表单"
-					}
-				}
-			]
-		},
-		{
-			"root": "pages/pagesOrder",
-			"pages": [
-				{
-					"path": "create/create",
-					"style": {
-						"navigationBarTitleText": "订单"
-					}
-				},
-				{
-					"path": "detail/detail",
-					"style": {
-						"navigationBarTitleText": "订单详情",
-						"navigationStyle": "custom", // 自定义导航栏
-						"navigationBarTextStyle": "white"
-					}
-				},
-				{
-					"path": "payment/payment",
-					"style": {
-						"navigationBarTitleText": "支付结果"
-					}
-				},
-				{
-					"path": "list/list",
-					"style": {
-						"navigationBarTitleText": "订单列表"
-					}
-				}
-			]
-		}
-	],
-	//分包预下载
-	"preloadRule": {
-		"pages/my/my": {
-			"network": "all",
-			"packages": [
-				"pagesMember"
-			]
-		}
-	}
+  // 组件自动导入
+  "easycom": {
+    // 是否开启自动导入，设置为 false 则关闭自动导入，默认为 true
+    "autoscan": true,
+    "custom": {
+      // uni-ui 规则如下配置
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+      // 以 Xtx 开头的组件，在 components 目录中查找
+      "^Xtx(.*)": "@/components/Xtx$1.vue"
+    }
+  },
+  "pages": [
+    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom", // 自定义导航栏
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/my/my",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/cart/cart",
+      "style": {
+        "navigationBarTitleText": "购物车"
+      }
+    },
+    {
+      "path": "pages/cart/cart2",
+      "style": {
+        "navigationBarTitleText": "购物车"
+      }
+    },
+    {
+      "path": "pages/category/category",
+      "style": {
+        "navigationBarTitleText": "分类"
+      }
+    },
+    {
+      "path": "pages/category/category2",
+      "style": {
+        "navigationBarTitleText": "分类"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/hot/hot",
+      "style": {
+        "navigationBarTitleText": "热门推荐"
+      }
+    },
+    {
+      "path": "pages/goods/goods",
+      "style": {
+        "navigationBarTitleText": "商品详情"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  // 设置 TabBar
+  "tabBar": {
+    "color": "#333",
+    "selectedColor": "#27ba9b",
+    "backgroundColor": "#fff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabs/home_default.png",
+        "selectedIconPath": "static/tabs/home_selected.png"
+      },
+      {
+        "text": "分类",
+        "pagePath": "pages/category/category",
+        "iconPath": "static/tabs/category_default.png",
+        "selectedIconPath": "static/tabs/category_selected.png"
+      },
+      {
+        "text": "购物车",
+        "pagePath": "pages/cart/cart",
+        "iconPath": "static/tabs/cart_default.png",
+        "selectedIconPath": "static/tabs/cart_selected.png"
+      },
+      {
+        "text": "我的",
+        "pagePath": "pages/my/my",
+        "iconPath": "static/tabs/user_default.png",
+        "selectedIconPath": "static/tabs/user_selected.png"
+      }
+    ]
+  },
+  // 分包加载
+  "subPackages": [
+    {
+      // 子包根目录
+      "root": "pagesMember",
+      "pages": [
+        {
+          "path": "settings/settings",
+          "style": {
+            "navigationBarTitleText": "设置"
+          }
+        },
+        {
+          "path": "profile/profile",
+          "style": {
+            "navigationBarTitleText": "个人信息页",
+            "navigationStyle": "custom", // 自定义导航栏
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "address/address",
+          "style": {
+            "navigationBarTitleText": "地址管理"
+          }
+        },
+        {
+          "path": "address-form/address-form",
+          "style": {
+            "navigationBarTitleText": "地址表单"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/pagesOrder",
+      "pages": [
+        {
+          "path": "create/create",
+          "style": {
+            "navigationBarTitleText": "订单"
+          }
+        },
+        {
+          "path": "detail/detail",
+          "style": {
+            "navigationBarTitleText": "订单详情",
+            "navigationStyle": "custom", // 自定义导航栏
+            "navigationBarTextStyle": "white"
+          }
+        },
+        {
+          "path": "payment/payment",
+          "style": {
+            "navigationBarTitleText": "支付结果"
+          }
+        },
+        {
+          "path": "list/list",
+          "style": {
+            "navigationBarTitleText": "订单列表"
+          }
+        }
+      ]
+    }
+  ],
+  //分包预下载
+  "preloadRule": {
+    "pages/my/my": {
+      "network": "all",
+      "packages": [
+        "pagesMember"
+      ]
+    }
+  }
 }
