@@ -86,16 +86,14 @@ const onTimeup = () => {
 import { getPayMockAPI, getPayWxPayMiniPayAPI } from '@/services/pay'
 const onOrderPay = async () => {
   // 通过环境变量区分开发环境
-  if (import.meta.env.DEV) {
-    // 开发环境：模拟支付，修改订单状态为已支付
-    await getPayMockAPI({ orderId: query.id })
-  } else {
-    // #ifdef MP-WEIXIN
-    // 生产环境：获取支付参数 + 发起微信支付
-    const res = await getPayWxPayMiniPayAPI({ orderId: query.id })
-    await wx.requestPayment(res.result)
-    // #endif
-  }
+
+  // 开发环境：模拟支付，修改订单状态为已支付
+  await getPayMockAPI({ orderId: query.id })
+
+  // 生产环境：获取支付参数 + 发起微信支付
+  // const res = await getPayWxPayMiniPayAPI({ orderId: query.id })
+  // await wx.requestPayment(res.result)
+
   // 关闭当前页，再跳转支付结果页
 
   uni.redirectTo({ url: `/pages/pagesOrder/payment/payment?id=${query.id}` })

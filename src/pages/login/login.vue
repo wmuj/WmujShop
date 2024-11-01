@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app'
 //获取code登录凭证
-// #ifdef MP-WEIXIN
+
 let code = ''
 onLoad(async () => {
-  //获取登录凭证
-  isFinish.value = false
-
   const res = await wx.login()
   code = res.code
-  isFinish.value = true
 })
 
 //获取用户手机号 (企业中的写法)
@@ -23,7 +19,6 @@ const ongetphonenumber: UniHelper.ButtonOnGetphonenumber = async (e) => {
   // 成功提示
   uni.showToast({ icon: 'none', title: '登录成功' })
 }
-// #endif
 
 // 模拟登录
 const testLogin = async () => {
