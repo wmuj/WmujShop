@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app'
 //获取code登录凭证
-
+// #ifdef MP-WEIXIN
 let code = ''
 onLoad(async () => {
   //获取登录凭证
@@ -23,6 +23,7 @@ const ongetphonenumber: UniHelper.ButtonOnGetphonenumber = async (e) => {
   // 成功提示
   uni.showToast({ icon: 'none', title: '登录成功' })
 }
+// #endif
 
 // 模拟登录
 const testLogin = async () => {
@@ -56,15 +57,20 @@ const isFinish = ref(false)
     </view>
     <view class="login">
       <!-- 网页端表单登录 -->
-      <!-- <input class="input" type="text" placeholder="请输入用户名/手机号码" /> -->
-      <!-- <input class="input" type="text" password placeholder="请输入密码" /> -->
-      <!-- <button class="button phone">登录</button> -->
+      <!-- #ifdef H5 -->
+      <input class="input" type="text" placeholder="请输入用户名/手机号码" />
+      <input class="input" type="text" password placeholder="请输入密码" />
+      <button class="button phone">登录</button>
+      <!-- #endif -->
 
       <!-- 小程序端授权登录 -->
+      <!-- #ifdef MP-WEIXIN -->
       <button class="button phone" open-type="getPhoneNumber" @getphonenumber="ongetphonenumber">
         <text class="icon icon-phone"></text>
         手机号快捷登录
       </button>
+      <!-- #endif -->
+
       <view class="extra">
         <view class="caption">
           <text>其他登录方式</text>

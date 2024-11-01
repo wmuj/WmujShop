@@ -88,7 +88,7 @@ export default {
       inputVal: '',
       searchName: '取消',
       isDelShow: false,
-      isFocus: true,
+      isFocus: false,
       showDropdown: false, // 新增：控制下拉框显示状态
     }
   },
